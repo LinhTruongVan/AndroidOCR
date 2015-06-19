@@ -1,5 +1,7 @@
 
 package app.com.augmentedreality;
+
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -47,16 +49,16 @@ public class OpenCVCameraFragment extends Fragment implements
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
+                case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
 //                    mOpenCvCameraView.setOnTouchListener(OpenCVCameraFragment.this);
-                } break;
-                default:
-                {
+                }
+                break;
+                default: {
                     super.onManagerConnected(status);
-                } break;
+                }
+                break;
             }
         }
     };
@@ -70,7 +72,7 @@ public class OpenCVCameraFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
 
-        mOpenCvCameraView = (AugmentedCamera)rootView.findViewById(R.id.augmented_activity_java_surface_view);
+        mOpenCvCameraView = (AugmentedCamera) rootView.findViewById(R.id.augmented_activity_java_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setOnTouchListener(OpenCVCameraFragment.this);
@@ -125,22 +127,24 @@ public class OpenCVCameraFragment extends Fragment implements
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateAndTime = sdf.format(new Date());
-        String fileName = iconsStoragePath+ "/" + currentDateAndTime + ".png";
+        String fileName = iconsStoragePath + "/" + currentDateAndTime + ".png";
         mOpenCvCameraView.takePicture(fileName);
         Toast.makeText(getActivity(), fileName + " saved", Toast.LENGTH_SHORT).show();
+
+        MainActivity.imagePaths.add(fileName);
 
         return false;
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, getActivity(), mLoaderCallback);
     }

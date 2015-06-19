@@ -18,13 +18,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
+                // OpenCvCamera fragment activity
+                return new OpenCVCameraFragment();
+            case 1:
                 // Results fragment activity
                 return new ResultsFragment();
-            case 1:
-                // OpenCvCamera activity
-                return new OpenCVCameraFragment();
             case 2:
-                // No Name fragment activity
+                // Google Search fragment activity
                 return new GoogleSearchFragment();
         }
 

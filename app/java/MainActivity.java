@@ -1,4 +1,5 @@
 package app.com.augmentedreality;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
@@ -10,14 +11,18 @@ import android.view.Menu;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends FragmentActivity implements
         ActionBar.TabListener {
 
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
+    public static List<String> imagePaths;
 
-    private String[] tabs = { "Results", "OpenCvCamera", "No Name" };
+    private String[] tabs = {"OpenCvCamera", "Results", "Google Search"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,7 @@ public class MainActivity extends FragmentActivity implements
         viewPager = (ViewPager) findViewById(R.id.mainView);
         actionBar = getActionBar();
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+        imagePaths = new ArrayList<String>();
 
         viewPager.setAdapter(mAdapter);
         actionBar.setHomeButtonEnabled(false);
@@ -38,8 +44,6 @@ public class MainActivity extends FragmentActivity implements
             actionBar.addTab(actionBar.newTab().setText(tag_name)
                     .setTabListener(this));
         }
-
-        actionBar.setSelectedNavigationItem(1);
 
         /**
          * on swiping the viewpager make respective tab selected
