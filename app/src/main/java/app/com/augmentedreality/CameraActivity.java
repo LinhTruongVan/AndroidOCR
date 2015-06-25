@@ -1,22 +1,19 @@
-
 package app.com.augmentedreality;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -24,68 +21,63 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import app.com.augmentedreality.core.AugmentedCamera;
 
-
-public class OpenCVCameraFragment extends Fragment implements
+/**
+ * Created by Heavy Rain on 6/20/2015.
+ */
+public class CameraActivity extends ActionBarActivity implements
         CameraBridgeViewBase.CvCameraViewListener2, View.OnTouchListener {
-    private static final String TAG = "OCVSample::Activity";
-    private AugmentedCamera mOpenCvCameraView;
-    private List<Size> mResolutionList;
-    private MenuItem[] mEffectMenuItems;
-    private SubMenu mColorEffectsMenu;
-    private MenuItem[] mResolutionMenuItems;
-    private SubMenu mResolutionMenu;
-    private View rootView;
 
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(getActivity()) {
+    public static final String TAG = "APP :: ";
+    private AugmentedCamera mOpenCvCameraView;
+    public static List imagePaths = new ArrayList();
+
+    /**
+     * Load open cv lib && cascade file
+     */
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-                    Log.i(TAG, "OpenCV loaded successfully");
+                    Log.i(TAG, "Open cv lib loaded  successfully");
                     mOpenCvCameraView.enableView();
-//                    mOpenCvCameraView.setOnTouchListener(OpenCVCameraFragment.this);
-                }
-                break;
-                default: {
+                    mOpenCvCameraView.setOnTouchListener(CameraActivity.this);
+                } break;
+                default:{
                     super.onManagerConnected(status);
-                }
-                break;
+                } break;
             }
         }
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        rootView = inflater.inflate(R.layout.opencv_camera_tab, container, false);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_AppCompat_Light_DarkActionBar);
         super.onCreate(savedInstanceState);
-        super.onCreate(savedInstanceState);
+        setContentView(R.layout.camera_activity);
 
-        mOpenCvCameraView = (AugmentedCamera) rootView.findViewById(R.id.augmented_activity_java_surface_view);
+        mOpenCvCameraView = (AugmentedCamera) findViewById(R.id.augmented_activity_java_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
-        mOpenCvCameraView.setOnTouchListener(OpenCVCameraFragment.this);
 
-        return rootView;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -95,11 +87,18 @@ public class OpenCVCameraFragment extends Fragment implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_camera_screen:
+                return true;
+            case R.id.action_results_screen:
+                GoToResultsActivity();
+                return true;
+            case R.id.action_exit:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -129,9 +128,8 @@ public class OpenCVCameraFragment extends Fragment implements
         String currentDateAndTime = sdf.format(new Date());
         String fileName = iconsStoragePath + "/" + currentDateAndTime + ".png";
         mOpenCvCameraView.takePicture(fileName);
-        Toast.makeText(getActivity(), fileName + " saved", Toast.LENGTH_SHORT).show();
-
-        MainActivity.imagePaths.add(fileName);
+        imagePaths.add(fileName);
+        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
 
         return false;
     }
@@ -146,7 +144,7 @@ public class OpenCVCameraFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, getActivity(), mLoaderCallback);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
     }
 
     public void onDestroy() {
@@ -155,4 +153,11 @@ public class OpenCVCameraFragment extends Fragment implements
             mOpenCvCameraView.disableView();
     }
 
+    public void GoToResultsActivity(){
+        //Starting a new Intent
+        Intent nextScreen = new Intent(getApplicationContext(), ResultsActivity.class);
+        startActivity(nextScreen);
+    }
+
 }
+

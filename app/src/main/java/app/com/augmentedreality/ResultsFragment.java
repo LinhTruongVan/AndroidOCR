@@ -1,7 +1,5 @@
 package app.com.augmentedreality;
 
-import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,17 +29,21 @@ public class ResultsFragment extends Fragment {
         btnLoadListImagePaths.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainActivity.imagePaths.size() > 0) {
+                if (CameraActivity.imagePaths.size() > 0) {
                     // Define a new Adapter
                     // First parameter - Context
                     // Second parameter - Layout for the row
                     // Third parameter - ID of the TextView to which the data is written
                     // Forth - the Array of data
                     arrayAdapter = new ArrayAdapter<String>(getActivity(),
-                            R.layout.simple_row, R.id.txtRow, MainActivity.imagePaths);
+                            R.layout.simple_row, R.id.txtRow, CameraActivity.imagePaths);
 
                     // Assign arrayAdapter to listImagePaths
                     listImagePaths.setAdapter(arrayAdapter);
+                }else{
+                    Toast.makeText(getActivity(),
+                            "List of imagePaths is empty!",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -57,8 +58,5 @@ public class ResultsFragment extends Fragment {
         return rootView;
     }
 
-    public void loadListImagesPath(List<String> imagePaths) {
-
-    }
 
 }

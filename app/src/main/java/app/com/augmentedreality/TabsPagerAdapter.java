@@ -18,12 +18,9 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
-                // OpenCvCamera fragment activity
-                return new OpenCVCameraFragment();
-            case 1:
                 // Results fragment activity
                 return new ResultsFragment();
-            case 2:
+            case 1:
                 // Google Search fragment activity
                 return new GoogleSearchFragment();
         }
@@ -34,7 +31,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // get item count - equal to number of tabs
-        return 3;
+        return 2;
     }
 
 }
